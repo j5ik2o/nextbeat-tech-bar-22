@@ -1,0 +1,12 @@
+target/
+project/target/
+project/project/
+.bsp/
+.metals/
+.bloop/
+.idea/
+.vscode/
+metals.sbt
+.DS_Store
+todo.md
+.audit/
