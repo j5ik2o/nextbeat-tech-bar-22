@@ -8,7 +8,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: jdx/mise-action@v2
-      - uses: coursier/cache-action@v6
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
+      - uses: coursier/cache-action@v9
       - run: sbt -batch scalafmtCheckAll test
