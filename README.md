@@ -23,7 +23,7 @@ Scala 3 の3つの構文を使うと、この原則を少ないコードで運�
 
 ## 動かし方
 
-前提として [mise](https://mise.jdx.dev/) を使います。`mise.toml` に Java 21 と sbt 1.13.1 を書いてあります。
+前提として [mise](https://mise.jdx.dev/) を使います。`mise.toml` に Java 21、sbt 1.13.1、Node.js 24 を書いてあります。
 
 ```sh
 mise trust
@@ -32,7 +32,7 @@ sbt test
 sbt "scala3/run"
 ```
 
-- `mise trust` と `mise install` で、リポジトリ指定の Java と sbt を用意します。
+- `mise trust` と `mise install` で、リポジトリ指定の Java、sbt、Node.js を用意します。
 - `sbt test` は `scala3` と `scala2` の両方でテストを実行します。
 - `sbt "scala3/run"` は `scala3` の `Main.scala` を実行し、入力ごとの `OK` またはエラー名を出力します。
 
@@ -47,6 +47,21 @@ sbt "scala3/run"
 "2026-11-07" -> MustBeInFuture
 "2026-11-13" -> OK (2026-11-13)
 ```
+
+## スライドを PDF にする
+
+スライドの PDF はリポジトリ内の Marp で生成します。初回は次の2つを実行します。
+
+```sh
+npm ci
+npm run slides:pdf
+```
+
+出力は `dist/slides.pdf` です。HTML が必要なときは `npm run slides:html` で `dist/slides.html` を生成できます。
+
+Marp は PDF の描画に Chrome を使います。Chrome が見つからない環境では、`CHROME_PATH` にブラウザの実行ファイルのパスを設定してください。
+
+Marp 4.5.1 の間接依存にある脆弱性を避けるため、`package.json` の `overrides` で Puppeteer Core 25.16.0 と KaTeX 0.18.2 を指定しています。Marp を更新するときは、この指定が不要になったかを確認し、`npm audit` と PDF・HTML の生成を再実行してください。
 
 ## 構成
 
@@ -66,6 +81,8 @@ sbt "scala3/run"
 │       ├── main/scala/com/example/duedate/DueDate.scala
 │       └── test/scala/com/example/duedate/DueDateSpec.scala
 ├── slides.md                  # 5分の発表スライド
+├── package.json               # スライド PDF 生成の npm スクリプト
+├── package-lock.json          # npm ci 用のロックファイル
 ├── mise.toml
 └── .github/workflows/ci.yml
 ```

@@ -1,0 +1,19 @@
+{
+  "name": "nextbeat-tech-bar-22",
+  "private": true,
+  "scripts": {
+    "slides:pdf": "marp slides.md -o dist/slides.pdf",
+    "slides:html": "marp slides.md -o dist/slides.html"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "4.5.1"
+  },
+  "overrides": {
+    "@marp-team/marp-cli": {
+      "puppeteer-core": "25.16.0"
+    },
+    "@marp-team/marp-core": {
+      "katex": "0.18.2"
+    }
+  }
+}
