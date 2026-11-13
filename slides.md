@@ -214,15 +214,13 @@ parse は検証を4層に分けています。1層目は長さ、2層目は数�
 final class DueDate private (val value: LocalDate) {
   def isOverdue(today: LocalDate): Boolean = today.isAfter(value)
 
-  def extendBusinessDays(n: Int, holidays: Set[LocalDate]): DueDate = {
-    var remaining = n
-    var d = value
-    while (remaining > 0) {
-      d = d.plusDays(1)
-      if (DueDate.isBusinessDay(d, holidays)) remaining -= 1
-    }
-    new DueDate(d)
-  }
+  def extendBusinessDays(n: Int, holidays: Set[LocalDate]): DueDate =
+    LazyList.iterate(value.plusDays(1))(_.plusDays(1))
+      .filter(DueDate.isBusinessDay(_, holidays))
+      .take(n)
+      .lastOption
+      .map(new DueDate(_))
+      .getOrElse(this)
 
   // businessDaysFrom・equals / hashCode / toString はリポジトリ参照
 }
@@ -251,12 +249,11 @@ object DueDate:
     def isOverdue(today: LocalDate): Boolean = today.isAfter(due)
 
     def extendBusinessDays(n: Int, holidays: Set[LocalDate]): DueDate =
-      var remaining = n
-      var d = due
-      while remaining > 0 do
-        d = d.plusDays(1)
-        if isBusinessDay(d, holidays) then remaining -= 1
-      d
+      LazyList.iterate(due.plusDays(1))(_.plusDays(1))
+        .filter(isBusinessDay(_, holidays))
+        .take(n)
+        .lastOption
+        .getOrElse(due)
 ```
 
 - 拡張メソッドを定義する `extension (due: DueDate)` で、`due.isOverdue(today)` のように呼べる
