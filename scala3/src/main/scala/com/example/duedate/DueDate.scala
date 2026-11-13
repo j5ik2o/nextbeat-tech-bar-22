@@ -35,17 +35,15 @@ object DueDate:
     def isOverdue(today: LocalDate): Boolean = today.isAfter(due)
 
     def businessDaysFrom(today: LocalDate, holidays: Set[LocalDate]): Int =
-      var count = 0
-      var d = today.plusDays(1)
-      while !d.isAfter(due) do
-        if isBusinessDay(d, holidays) then count += 1
-        d = d.plusDays(1)
-      count
+      LazyList
+        .iterate(today.plusDays(1))(_.plusDays(1))
+        .takeWhile(!_.isAfter(due))
+        .count(isBusinessDay(_, holidays))
 
     def extendBusinessDays(n: Int, holidays: Set[LocalDate]): DueDate =
-      var remaining = n
-      var d = due
-      while remaining > 0 do
-        d = d.plusDays(1)
-        if isBusinessDay(d, holidays) then remaining -= 1
-      d
+      LazyList
+        .iterate(due.plusDays(1))(_.plusDays(1))
+        .filter(isBusinessDay(_, holidays))
+        .take(n)
+        .lastOption
+        .getOrElse(due)

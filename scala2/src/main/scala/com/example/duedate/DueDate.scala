@@ -16,25 +16,20 @@ object ParseError {
 final class DueDate private (val value: LocalDate) {
   def isOverdue(today: LocalDate): Boolean = today.isAfter(value)
 
-  def businessDaysFrom(today: LocalDate, holidays: Set[LocalDate]): Int = {
-    var count = 0
-    var d = today.plusDays(1)
-    while (!d.isAfter(value)) {
-      if (DueDate.isBusinessDay(d, holidays)) count += 1
-      d = d.plusDays(1)
-    }
-    count
-  }
+  def businessDaysFrom(today: LocalDate, holidays: Set[LocalDate]): Int =
+    LazyList
+      .iterate(today.plusDays(1))(_.plusDays(1))
+      .takeWhile(!_.isAfter(value))
+      .count(DueDate.isBusinessDay(_, holidays))
 
-  def extendBusinessDays(n: Int, holidays: Set[LocalDate]): DueDate = {
-    var remaining = n
-    var d = value
-    while (remaining > 0) {
-      d = d.plusDays(1)
-      if (DueDate.isBusinessDay(d, holidays)) remaining -= 1
-    }
-    new DueDate(d)
-  }
+  def extendBusinessDays(n: Int, holidays: Set[LocalDate]): DueDate =
+    LazyList
+      .iterate(value.plusDays(1))(_.plusDays(1))
+      .filter(DueDate.isBusinessDay(_, holidays))
+      .take(n)
+      .lastOption
+      .map(new DueDate(_))
+      .getOrElse(this)
 
   override def equals(other: Any): Boolean =
     other match { case that: DueDate => value == that.value; case _ => false }

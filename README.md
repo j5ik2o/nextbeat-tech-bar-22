@@ -23,7 +23,7 @@ Scala 3 の3つの構文を使うと、この原則を少ないコードで運�
 
 ## 動かし方
 
-前提として [mise](https://mise.jdx.dev/) を使います。`mise.toml` に Java 21 と sbt 1.13.1 を書いてあります。
+前提として [mise](https://mise.jdx.dev/) を使います。`mise.toml` に Java 21、sbt 1.13.1、Node.js 24 を書いてあります。
 
 ```sh
 mise trust
@@ -32,7 +32,7 @@ sbt test
 sbt "scala3/run"
 ```
 
-- `mise trust` と `mise install` で、リポジトリ指定の Java と sbt を用意します。
+- `mise trust` と `mise install` で、リポジトリ指定の Java、sbt、Node.js を用意します。
 - `sbt test` は `scala3` と `scala2` の両方でテストを実行します。
 - `sbt "scala3/run"` は `scala3` の `Main.scala` を実行し、入力ごとの `OK` またはエラー名を出力します。
 
@@ -47,6 +47,21 @@ sbt "scala3/run"
 "2026-11-07" -> MustBeInFuture
 "2026-11-13" -> OK (2026-11-13)
 ```
+
+## スライドを PDF / HTML にする
+
+スライドはリポジトリ内の Marp と、テーマ `ideo-plus.css` で生成します。初回は次を実行します。
+
+```sh
+npm ci
+npm run build
+```
+
+`npm run build` は PDF と HTML の両方を出します。PDF だけなら `npm run build:pdf`（`dist/slides.pdf`）、HTML だけなら `npm run build:html`（`dist/slides.html`）です。
+
+Marp は PDF の描画に Chrome を使います。Chrome が見つからない環境では、`CHROME_PATH` にブラウザの実行ファイルのパスを設定してください。
+
+Marp 4.5.1 の間接依存にある脆弱性を避けるため、`package.json` の `overrides` で Puppeteer Core 25.16.0 と KaTeX 0.18.2 を指定しています。Marp を更新するときは、この指定が不要になったかを確認し、`npm audit` と PDF・HTML の生成を再実行してください。
 
 ## 構成
 
@@ -66,6 +81,9 @@ sbt "scala3/run"
 │       ├── main/scala/com/example/duedate/DueDate.scala
 │       └── test/scala/com/example/duedate/DueDateSpec.scala
 ├── slides.md                  # 5分の発表スライド
+├── ideo-plus.css              # スライドの Marp テーマ
+├── package.json               # スライド PDF / HTML 生成の npm スクリプト
+├── package-lock.json          # npm ci 用のロックファイル
 ├── mise.toml
 └── .github/workflows/ci.yml
 ```
@@ -103,12 +121,13 @@ Scala 3 のテストでは、`opaque type` の値を直接比較せず、`toStri
 
 ## スライドとの差分
 
-5分に収めるため、またスライドのコードをそのまま動かすために、次の差分があります。
+スライドでは5分で説明するためにコードを抜粋しています。説明の範囲と、実行できるコードとの主な違いは次のとおりです。
 
 | 箇所 | 差分 | 理由 |
 | --- | --- | --- |
-| 「Scala 3 の道具箱」 | スライドを削除 | 5分に収めるため。`opaque type`、`enum`、`extension` の説明は本文とコードに残した |
-| 「境界で守る」 | スライドを削除し、まとめの4番目の箇条書きに統合 | 同上。原則は「検証は生成時（境界）に寄せ、中では型を信じる」 |
+| `opaque type` の解説 | 別ファイルから `LocalDate` を直接代入する、コンパイルエラーの例を掲載 | 通常の型の別名との違いを示すため。定義側と利用側の抜粋を1枚に並べている |
+| エラー型 | `enum` の宣言は掲載し、構文の解説は省略 | `opaque type` と `extension` の説明に時間を使うため |
+| 生成と検証 | 境界で検証し、内部では検証済みの型を受け取る設計を本文で説明 | まとめの前に、`parse` の役割を説明するため |
 | 振る舞い（Scala 3） | 先頭に `object DueDate:` を追加 | スライドの断片だけではコンパイルできないため |
 | 振る舞い（Scala 3） | `businessDaysFrom` をスライドから削除 | 行数を抑えるため。コードとテストには残した |
 | 振る舞い（Scala 2） | `businessDaysFrom` をスライドから削除 | 同上。コードとテストには残した |
