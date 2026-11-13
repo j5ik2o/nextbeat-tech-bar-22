@@ -98,13 +98,34 @@ Scala 3 でバリューオブジェクトを書くと、Scala 2 の定型記述�
 
 ---
 
+<style scoped>
+.profile { display: grid; grid-template-columns: 330px 1fr; gap: 36px; align-items: center; }
+.profile h2 { margin-bottom: 18px; }
+.profile ul { font-size: 22px; line-height: 1.5; padding-left: 1.1em; }
+.profile li { margin: 0.5em 0; }
+.profile img { display: block; width: 100%; height: auto; }
+</style>
+
 # 自己紹介
+
+<div class="profile">
+<div>
 
 ## かとじゅん（@j5ik2o）
 
-- （所属・肩書き）
-- （経歴）
-- （いまやっていること）
+- 職歴:ドワンゴ→グリー→kubell(旧Chatwork)
+- 2025年から自分の会社(IDEO PLUS合同会社)
+- 最近やってること: 
+  - ソフトウェアファクトリ
+  - DGX Sparkクラスタ
+
+</div>
+<div>
+
+![Muse・Orca・takt の流れ](muse-orca-takt-flow-v4.png)
+
+</div>
+</div>
 
 <!--
 （自己紹介のノート）
