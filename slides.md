@@ -1,29 +1,87 @@
 ---
 marp: true
-theme: default
+theme: ideo-plus
 size: 16:9
 paginate: true
-header: "ビジネスロジックを堅牢に ｜ Scala 3 のドメインプリミティブ"
+header: "ビジネスロジックを堅牢に"
 style: |
-  section { font-size: 28px; }
-  section.lead { text-align: center; }
-  section.lead h1 { font-size: 50px; }
-  pre { font-size: 0.72em; }
-  section.dense pre { font-size: 0.58em; }
-  section.dense2 { font-size: 26px; padding: 36px 50px; }
-  section.dense2 pre { font-size: 0.5em; }
-  section.opaque pre { font-size: 0.68em; }
-  section.dense3 { font-size: 24px; padding: 30px 44px; }
-  section.dense3 pre { font-size: 0.48em; line-height: 1.25; }
-  section.code-large { font-size: 24px; padding: 52px 44px 36px; }
-  section.code-large h1 { margin: 0 0 12px; }
-  section.code-large pre { font-size: 0.72em; line-height: 1.2; margin: 0 0 12px; padding: 0.6em 0.9em; }
-  section.code-large ul { margin: 0; }
-  table { font-size: 0.82em; }
+  section[data-marpit-pagination]::after,
+  section::after {
+    position: absolute !important;
+    top: auto !important;
+    bottom: 0 !important;
+    right: 72px !important;
+    left: auto !important;
+    height: 56px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+    letter-spacing: 0.04em !important;
+    color: #526e7e !important;
+    background: transparent !important;
+    border: none !important;
+  }
+  header, section header {
+    position: absolute !important;
+    left: 72px !important;
+    right: 72px !important;
+    top: auto !important;
+    bottom: 0 !important;
+    height: 56px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    border: none !important;
+    border-top: 1px solid #d4e3eb !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    font-size: 13px !important;
+    color: #526e7e !important;
+  }
+  section.lead::after {
+    display: flex !important;
+    content: "IDEO PLUS" !important;
+    bottom: 0 !important;
+    right: 72px !important;
+    height: 56px !important;
+    padding: 0 !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    font-size: 12px !important;
+    letter-spacing: 0.16em !important;
+    color: #526e7e !important;
+  }
+  section.lead footer {
+    display: flex !important;
+    position: absolute !important;
+    left: auto !important;
+    right: 72px !important;
+    bottom: 0 !important;
+    top: auto !important;
+    height: 56px !important;
+    width: auto !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.16em !important;
+    color: #526e7e !important;
+  }
 ---
 
 <!-- _class: lead -->
 <!-- _header: "" -->
+<!-- _footer: "IDEO PLUS" -->
 <!-- _paginate: false -->
 
 # ビジネスロジックを堅牢に
@@ -35,14 +93,14 @@ Nextbeat Tech Bar #22
 
 <!--
 10秒。テーマは、ビジネスロジックを不正なデータから守る最小単位、ドメインプリミティブです。
-Scala 3 でバリューオブジェクトを書くと、Scala 2 の儀式がどれだけ減るかを見ます。
+Scala 3 でバリューオブジェクトを書くと、Scala 2 の定型記述がどれだけ減るかを見ます。
 -->
 
 ---
 
 <!-- _class: dense2 -->
 
-# Scala 2 の痛み：守れる。でも儀式が多い
+# Scala 2 でも不正な値は作れないが、定型記述が多い
 
 `DueDate` は、期限の日付とルールを持つ小さな型。これをドメインプリミティブと呼ぶ。
 
@@ -68,7 +126,7 @@ object DueDate {
 DueDate は期限という業務上の意味とルールを表す小さな型で、バリューオブジェクトとして実装します。
 不正な値を作れない設計は Scala 2 でも可能ですが、正しく書くとこの量になります。
 LocalDate をクラスで包み、equals、hashCode、toString を定義しています。
-痛みは守れないことではなく、守るための儀式の量です。次の Scala 3 版と並べるので、行数と置き場所だけ意識して見てください。
+次の Scala 3 版と並べるので、行数と置き場所だけ意識して見てください。
 -->
 
 ---
@@ -229,14 +287,14 @@ businessDaysFrom は同じ extension に置き、テストで確認していま�
 
 - `DueDate` のような型を作るたびに、包むクラスや等価性の定義を書かずに済む
 - 引数を `DueDate` にすると、「日付のうち期限を受け取る」と型で伝えられる
-- 業務の意味ごとに型とルールを表すことが、ドメインモデルの解像度を上げる
+- 業務の意味ごとに、型とルールを表す
 
 <!--
 45秒。ここまでで、期限という意味、生成時の検証、期限に関する振る舞いを1つの型に集めました。
 Scala 2 でも同じ設計はできます。Scala 3 では包むクラスや等価性の定義が不要なので、小さな型を作るたびの記述負担が減ります。
 その分、業務の概念ごとに型を作りやすくなります。これが、小さな型を多く置けるという話につながります。
 たとえば引数の型が LocalDate なら日付までしか分かりませんが、DueDate なら期限を受け取ると読めます。
-このように業務上の区別とルールを型で表すことを、ドメインモデルの解像度が上がると言っています。
+業務上の区別とルールを、型で表しています。
 -->
 
 ---

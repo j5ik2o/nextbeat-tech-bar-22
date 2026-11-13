@@ -48,16 +48,16 @@ sbt "scala3/run"
 "2026-11-13" -> OK (2026-11-13)
 ```
 
-## スライドを PDF にする
+## スライドを PDF / HTML にする
 
-スライドの PDF はリポジトリ内の Marp で生成します。初回は次の2つを実行します。
+スライドはリポジトリ内の Marp と、テーマ `ideo-plus.css` で生成します。初回は次を実行します。
 
 ```sh
 npm ci
-npm run slides:pdf
+npm run build
 ```
 
-出力は `dist/slides.pdf` です。HTML が必要なときは `npm run slides:html` で `dist/slides.html` を生成できます。
+`npm run build` は PDF と HTML の両方を出します。PDF だけなら `npm run build:pdf`（`dist/slides.pdf`）、HTML だけなら `npm run build:html`（`dist/slides.html`）です。
 
 Marp は PDF の描画に Chrome を使います。Chrome が見つからない環境では、`CHROME_PATH` にブラウザの実行ファイルのパスを設定してください。
 
@@ -81,7 +81,8 @@ Marp 4.5.1 の間接依存にある脆弱性を避けるため、`package.json` 
 │       ├── main/scala/com/example/duedate/DueDate.scala
 │       └── test/scala/com/example/duedate/DueDateSpec.scala
 ├── slides.md                  # 5分の発表スライド
-├── package.json               # スライド PDF 生成の npm スクリプト
+├── ideo-plus.css              # スライドの Marp テーマ
+├── package.json               # スライド PDF / HTML 生成の npm スクリプト
 ├── package-lock.json          # npm ci 用のロックファイル
 ├── mise.toml
 └── .github/workflows/ci.yml
