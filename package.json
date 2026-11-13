@@ -4,7 +4,7 @@
   "scripts": {
     "build": "npm run build:pdf && npm run build:html",
     "build:pdf": "marp slides.md --theme ./ideo-plus.css --allow-local-files --html --no-stdin -o dist/slides.pdf",
-    "build:html": "marp slides.md --theme ./ideo-plus.css --allow-local-files --html --no-stdin -o dist/slides.html",
+    "build:html": "mkdir -p dist && cp muse-orca-takt-flow-v4.png dist/ && marp slides.md --theme ./ideo-plus.css --allow-local-files --html --no-stdin -o dist/slides.html",
     "slides:pdf": "npm run build:pdf",
     "slides:html": "npm run build:html"
   },
